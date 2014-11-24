@@ -1,0 +1,31 @@
+{
+  "name": "calapi",
+  "version": "0.0.1",
+  "description": "Unofficial API's for Cal.",
+  "main": "app.js",
+  "keywords": [
+    "API",
+    "Cal",
+    "Berkeley"
+  ],
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianv/calapi"
+  },
+  "author": "Christian Vuerings vueringschristian@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.18.0",
+    "compression": "^1.2.0",
+    "express": "^4.10.1",
+    "request": "^2.47.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.1",
+    "supertest": "^0.14.0"
+  }
+}
