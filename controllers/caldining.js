@@ -93,6 +93,8 @@ var parseMenu = function(menuElement) {
 
 exports.get = function(req, res, next) {
 
+  locations = [];
+
   request.get(baseURL + 'todaysentrees.asp', function(err, request, body) {
     if (err) return next(err);
 

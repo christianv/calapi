@@ -3,6 +3,12 @@
 Unofficial API's for Cal.
 https://calapi.herokuapp.com/
 
+## Start
+
+```
+nodemon app.js
+```
+
 ## Deploy
 
 ### Initial setup
