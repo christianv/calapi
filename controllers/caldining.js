@@ -2,9 +2,12 @@ var cheerio = require('cheerio');
 var request = require('request');
 var url = require('url');
 var extend = require('util')._extend;
+var q = require('q');
 
 var hoursUrl = 'http://caldining.housing.berkeley.edu/hours_i.php#';
 var baseURL = 'http://services.housing.berkeley.edu/FoodPro/dining/static/';
+
+var timer = false;
 
 var locations = [];
 var locationMapping = {
@@ -41,6 +44,7 @@ var locationMapping = {
     }
   }
 };
+var warmedLocations = false;
 
 var $;
 
@@ -91,9 +95,10 @@ var parseMenu = function(menuElement) {
   });
 };
 
-exports.get = function(req, res, next) {
-
+var warmInfo = function() {
   locations = [];
+
+  var deferred = q.defer();
 
   request.get(baseURL + 'todaysentrees.asp', function(err, request, body) {
     if (err) return next(err);
@@ -110,8 +115,36 @@ exports.get = function(req, res, next) {
       }
     });
 
-    res.json(locations);
+    deferred.resolve(locations);
+    warmedLocations = locations;
   });
+
+  return deferred.promise;
+};
+
+exports.get = function(req, res, next) {
+
+  // First call
+  if (!timer && !warmedLocations.length) {
+    warmInfo().then(function(data) {
+      res.json(data);
+    });
+
+    setInterval(warmInfo, 1000);
+    timer = true;
+  }
+  // Subsequent calls
+  else if (timer && warmedLocations.length) {
+    return res.json(warmedLocations);
+  }
+  // If something goes wrong, still return the correct data
+  // Might happen between the first and second load
+  else {
+    console.log('CalDining API - Error - this shouldn\'t get executed');
+    warmInfo().then(function(data) {
+      res.json(data);
+    });
+  }
 
 };
 
